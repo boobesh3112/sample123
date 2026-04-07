@@ -1,12 +1,11 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { CreditCard, Banknote, Smartphone, Download, Printer, CheckCircle } from 'lucide-react';
+import { CreditCard, Banknote, Smartphone, Download, Printer, CheckCircle, Pill } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Order } from '../App';
-import logoImg from 'figma:asset/88b17ec2d6d98f8de7b8880fcfaa15c63747386e.png';
 
 interface PaymentPageProps {
   order: Order;
@@ -75,8 +74,12 @@ export default function PaymentPage({ order, onClearCart }: PaymentPageProps) {
               <div ref={billRef} className="p-8 bg-white">
                 {/* Header */}
                 <div className="text-center mb-6 border-b-2 border-gray-200 pb-6">
-                  <img src={logoImg} alt="Riky Pharma" className="h-16 w-auto mx-auto mb-3" />
-                  <h2 className="text-2xl font-bold text-gray-800">Riky Pharma</h2>
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <Pill className="w-12 h-12 text-blue-600" />
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-800">Riky Pharma</h2>
+                    </div>
+                  </div>
                   <p className="text-sm text-gray-600 mt-1">Owned by B. Indumathi Ramkumar</p>
                   <p className="text-sm text-gray-600">Tamil Sangam Road, Maninagaram</p>
                   <p className="text-sm text-gray-600">Madurai, Tamil Nadu - 625001</p>
