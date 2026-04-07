@@ -1,0 +1,333 @@
+==============================================
+FILE 3: products.html (Products Page)
+==============================================
+Save this as: products.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riky Pharma - Products</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="container">
+            <div class="header">
+                <div class="flex-row">
+                    <button class="btn-back" onclick="window.location.href='home.html'">←</button>
+                    <div>
+                        <h1 class="page-title">Our Products</h1>
+                        <p class="text-sm" id="productCount"></p>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary cart-btn" onclick="window.location.href='cart.html'">
+                    View Cart
+                    <span id="cartBadge" class="cart-badge"></span>
+                </button>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="form-input" placeholder="Search medicines by name or composition...">
+            </div>
+
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-category="All">All</button>
+                <button class="filter-btn" data-category="Tablet">Tablet</button>
+                <button class="filter-btn" data-category="Capsule">Capsule</button>
+                <button class="filter-btn" data-category="Syrup">Syrup</button>
+                <button class="filter-btn" data-category="Gel">Gel</button>
+                <button class="filter-btn" data-category="Sachet">Sachet</button>
+            </div>
+
+            <div id="productsGrid" class="products-grid"></div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        let cart = JSON.parse(localStorage.getItem('rikyPharmaCart')) || [];
+        let selectedCategory = 'All';
+        let searchQuery = '';
+
+        function renderProducts() {
+            const filtered = products.filter(p => {
+                const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+                const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                    p.composition.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            document.getElementById('productCount').textContent = `${filtered.length} products available`;
+
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = filtered.map(product => {
+                const cartItem = cart.find(c => c.id === product.id);
+                const quantity = cartItem ? cartItem.quantity : 0;
+
+                return `
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="${product.image}" alt="${product.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect fill=%22%23e3f2fd%22 width=%22200%22 height=%22200%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%232196f3%22 font-size=%2220%22>No Image</text></svg>'">
+                            <span class="category-badge">${product.category}</span>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">${product.name}</h3>
+                            <p class="product-composition">${product.composition}</p>
+                            <p class="product-description">${product.description}</p>
+                            <div class="product-price">
+                                <span class="price">₹${product.mrp}</span>
+                                <span class="text-sm">MRP</span>
+                            </div>
+                            ${quantity === 0 ? `
+                                <button class="btn btn-primary btn-block" onclick="addToCart('${product.id}')">
+                                    Add to Cart
+                                </button>
+                            ` : `
+                                <div class="quantity-control">
+                                    <button onclick="removeFromCart('${product.id}')">−</button>
+                                    <span>${quantity}</span>
+                                    <button onclick="addToCart('${product.id}')">+</button>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateCartBadge();
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(c => c.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            localStorage.setItem('rikyPharmaCart', JSON.stringify(cart));
+            renderProducts();
+        }
+
+        function removeFromCart(productId) {
+            const existingItem = cart.find(c => c.id === productId);
+
+            if (existingItem && existingItem.quantity > 1) {
+                existingItem.quantity--;
+            } else {
+                cart = cart.filter(c => c.id !== productId);
+            }
+
+            localStorage.setItem('rikyPharmaCart', JSON.stringify(cart));
+            renderProducts();
+        }
+
+        function updateCartBadge() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cartBadge');
+            if (totalItems > 0) {
+                badge.textContent = totalItems;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderProducts();
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedCategory = btn.dataset.category;
+                renderProducts();
+            });
+        });
+
+        if (!localStorage.getItem('rikyPharmaUser')) {
+            window.location.href = 'index.html';
+        }
+
+        renderProducts();
+    </script>
+</body>
+</html>
+
+==============================================
+FILE 4: cart.html (Cart Page)
+==============================================
+Save this as: cart.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riky Pharma - Cart</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="container">
+            <div class="header">
+                <div class="flex-row">
+                    <button class="btn-back" onclick="window.location.href='products.html'">←</button>
+                    <div>
+                        <h1 class="page-title">Shopping Cart</h1>
+                        <p class="text-sm" id="itemCount"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cartContent"></div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('rikyPharmaUser'));
+        let cart = JSON.parse(localStorage.getItem('rikyPharmaCart')) || [];
+
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        function renderCart() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalAmount = cart.reduce((sum, item) => sum + (item.mrp * item.quantity), 0);
+
+            document.getElementById('itemCount').textContent = `${totalItems} items in cart`;
+
+            const content = document.getElementById('cartContent');
+
+            if (cart.length === 0) {
+                content.innerHTML = `
+                    <div class="card text-center empty-cart">
+                        <h2>Your cart is empty</h2>
+                        <p>Add some products to get started!</p>
+                        <button class="btn btn-primary" onclick="window.location.href='products.html'">
+                            Browse Products
+                        </button>
+                    </div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="cart-grid">
+                        <div class="cart-items">
+                            ${cart.map(item => `
+                                <div class="cart-item card">
+                                    <div class="cart-item-info">
+                                        <h3>${item.name}</h3>
+                                        <p class="text-sm">${item.composition}</p>
+                                        <span class="category-badge-sm">${item.category}</span>
+                                        <p class="price-sm">₹${item.mrp} per unit</p>
+                                    </div>
+                                    <div class="cart-item-controls">
+                                        <div class="quantity-control">
+                                            <button onclick="removeFromCart('${item.id}')">−</button>
+                                            <span>${item.quantity}</span>
+                                            <button onclick="addToCart('${item.id}')">+</button>
+                                        </div>
+                                        <div class="item-total">
+                                            <p class="text-sm">Total</p>
+                                            <p class="price">₹${(item.mrp * item.quantity).toFixed(2)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="cart-summary card sticky">
+                            <h2>Order Summary</h2>
+                            <div class="summary-row">
+                                <span>Subtotal (${totalItems} items)</span>
+                                <span class="font-bold">₹${totalAmount.toFixed(2)}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Tax (Included)</span>
+                                <span class="font-bold">₹0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Delivery</span>
+                                <span class="font-bold text-green">FREE</span>
+                            </div>
+                            <div class="summary-total">
+                                <span>Total Amount</span>
+                                <span class="price-large">₹${totalAmount.toFixed(2)}</span>
+                            </div>
+
+                            <div class="customer-info">
+                                <h3>Customer Details</h3>
+                                <p><strong>Name:</strong> ${user.name}</p>
+                                <p><strong>Mobile:</strong> ${user.mobile}</p>
+                                <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-IN')}</p>
+                            </div>
+
+                            <button class="btn btn-primary btn-block" onclick="proceedToPayment()">
+                                Proceed to Payment
+                            </button>
+                            <button class="btn btn-secondary btn-block" onclick="window.location.href='products.html'">
+                                Continue Shopping
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function addToCart(productId) {
+            const item = cart.find(c => c.id === productId);
+            if (item) {
+                item.quantity++;
+                localStorage.setItem('rikyPharmaCart', JSON.stringify(cart));
+                renderCart();
+            }
+        }
+
+        function removeFromCart(productId) {
+            const item = cart.find(c => c.id === productId);
+            if (item && item.quantity > 1) {
+                item.quantity--;
+            } else {
+                cart = cart.filter(c => c.id !== productId);
+            }
+            localStorage.setItem('rikyPharmaCart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function proceedToPayment() {
+            if (cart.length === 0) return;
+
+            const order = {
+                billNumber: generateBillNumber(),
+                items: cart,
+                total: cart.reduce((sum, item) => sum + (item.mrp * item.quantity), 0),
+                date: new Date().toISOString(),
+                user: user
+            };
+
+            localStorage.setItem('rikyPharmaOrder', JSON.stringify(order));
+            window.location.href = 'payment.html';
+        }
+
+        function generateBillNumber() {
+            const date = new Date();
+            const year = date.getFullYear().toString().slice(-2);
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            return `RP${year}${month}${day}${random}`;
+        }
+
+        renderCart();
+    </script>
+</body>
+</html>

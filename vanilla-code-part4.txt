@@ -1,0 +1,187 @@
+==============================================
+FILE 7: data.js (Products Data)
+==============================================
+Save this as: data.js
+
+const products = [
+  {
+    id: 'prod-001',
+    name: 'ESORIK-D CAPS',
+    composition: 'Esomeprazole 40mg + Domperidone 30mg',
+    mrp: 108,
+    category: 'Capsule',
+    description: 'For acid reflux and GERD',
+    image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-002',
+    name: 'CEFNIK-200LB TAB',
+    composition: 'Cefixime 200mg + Lactobacillus',
+    mrp: 180,
+    category: 'Tablet',
+    description: 'Antibiotic with probiotic',
+    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-003',
+    name: 'MONTARIK-LC TAB',
+    composition: 'Montelukast 10mg + Levocetirizine 5mg',
+    mrp: 135,
+    category: 'Tablet',
+    description: 'For allergies and asthma',
+    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-004',
+    name: 'CALZINRIK-D3 TAB',
+    composition: 'Calcium Carbonate + Vitamin D3',
+    mrp: 120,
+    category: 'Tablet',
+    description: 'Calcium and Vitamin D supplement',
+    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-005',
+    name: 'CDM-60K SACHET',
+    composition: 'Cholecalciferol 60000 IU',
+    mrp: 38,
+    category: 'Sachet',
+    description: 'Vitamin D3 supplement',
+    image: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-006',
+    name: 'BIORIK PRO CAPS',
+    composition: 'Probiotic Complex',
+    mrp: 150,
+    category: 'Capsule',
+    description: 'Gut health supplement',
+    image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-007',
+    name: 'OFLARIK-200 TAB',
+    composition: 'Ofloxacin 200mg',
+    mrp: 69,
+    category: 'Tablet',
+    description: 'Antibiotic for bacterial infections',
+    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-008',
+    name: 'RIKVITA SYRUP',
+    composition: 'Multivitamin & Minerals',
+    mrp: 159.80,
+    category: 'Syrup',
+    description: 'Complete nutritional supplement',
+    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-009',
+    name: 'CEFNIK-O DRY SYRUP',
+    composition: 'Cefixime 50mg/5ml',
+    mrp: 96,
+    category: 'Syrup',
+    description: 'Antibiotic suspension for children',
+    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-010',
+    name: 'CEFNIK-O TAB',
+    composition: 'Cefixime 200mg + Ofloxacin 200mg',
+    mrp: 225,
+    category: 'Tablet',
+    description: 'Combination antibiotic',
+    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-011',
+    name: 'AZIRIK-250 TAB',
+    composition: 'Azithromycin 250mg',
+    mrp: 78.21,
+    category: 'Tablet',
+    description: 'Antibiotic for respiratory infections',
+    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-012',
+    name: 'AZIRIK-500 TAB',
+    composition: 'Azithromycin 500mg',
+    mrp: 72,
+    category: 'Tablet',
+    description: 'High-strength antibiotic',
+    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-013',
+    name: 'COFRIK-D SYRUP',
+    composition: 'Dextromethorphan + Chlorpheniramine',
+    mrp: 109,
+    category: 'Syrup',
+    description: 'Cough suppressant',
+    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-014',
+    name: 'DEACT TAB',
+    composition: 'Diclofenac + Paracetamol + Serratiopeptidase',
+    mrp: 69,
+    category: 'Tablet',
+    description: 'Pain and inflammation relief',
+    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-015',
+    name: 'COFRIK EXPECTORANT SYRUP',
+    composition: 'Guaifenesin + Ambroxol',
+    mrp: 108,
+    category: 'Syrup',
+    description: 'Expectorant for productive cough',
+    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-016',
+    name: 'ORDIC GEL',
+    composition: 'Diclofenac Diethylamine + Methyl Salicylate',
+    mrp: 105,
+    category: 'Gel',
+    description: 'Topical pain relief gel',
+    image: 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-017',
+    name: 'REKY GEL',
+    composition: 'Diclofenac + Linseed Oil + Menthol',
+    mrp: 108,
+    category: 'Gel',
+    description: 'Muscle and joint pain relief',
+    image: 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-018',
+    name: 'BRECET SYRUP',
+    composition: 'Cetirizine 5mg/5ml',
+    mrp: 73,
+    category: 'Syrup',
+    description: 'Antihistamine for allergies',
+    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-019',
+    name: 'ULTRA ZEAL TAB',
+    composition: 'Multivitamin + Multimineral + Antioxidants',
+    mrp: 119.70,
+    category: 'Tablet',
+    description: 'Complete wellness supplement',
+    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=400&fit=crop'
+  },
+  {
+    id: 'prod-020',
+    name: 'NEURORIK PLUS TAB',
+    composition: 'Methylcobalamin + Alpha Lipoic Acid + Folic Acid',
+    mrp: 159,
+    category: 'Tablet',
+    description: 'Nerve health supplement',
+    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=400&fit=crop'
+  }
+];

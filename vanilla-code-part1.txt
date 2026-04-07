@@ -1,0 +1,245 @@
+==============================================
+RIKY PHARMA - VANILLA HTML/CSS/JAVASCRIPT APP
+==============================================
+
+This is a complete pharmaceutical e-commerce application using only HTML, CSS, and JavaScript.
+No React, no build tools, no dependencies except for QR code generation via CDN.
+
+INSTRUCTIONS:
+1. Create the following files in a folder on your computer
+2. Copy each section into its respective file
+3. Make sure the logo image is at: src/imports/image-0.png
+4. Open index.html in a web browser
+
+==============================================
+FILE 1: index.html (Login Page)
+==============================================
+Save this as: index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riky Pharma - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="login-container fade-in">
+            <div class="card">
+                <div class="logo-container">
+                    <img src="src/imports/image-0.png" alt="Riky Pharma Logo" class="logo">
+                </div>
+
+                <div class="text-center mb-30">
+                    <h1 class="title">Welcome to Riky Pharma</h1>
+                    <p class="subtitle">Please login to continue</p>
+                </div>
+
+                <form id="loginForm" class="form">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="name" class="form-input" placeholder="Enter your full name" required>
+                        <span class="error-message" id="nameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Mobile Number</label>
+                        <input type="tel" id="mobile" class="form-input" placeholder="Enter 10-digit mobile number" maxlength="10" required>
+                        <span class="error-message" id="mobileError"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+
+                <p class="footer-text">Your trusted pharmaceutical partner since 2017</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const mobile = document.getElementById('mobile').value.trim();
+
+            document.getElementById('nameError').textContent = '';
+            document.getElementById('mobileError').textContent = '';
+
+            let hasError = false;
+
+            if (!name) {
+                document.getElementById('nameError').textContent = 'Name is required';
+                hasError = true;
+            }
+
+            if (!mobile) {
+                document.getElementById('mobileError').textContent = 'Mobile number is required';
+                hasError = true;
+            } else if (!/^\d{10}$/.test(mobile)) {
+                document.getElementById('mobileError').textContent = 'Please enter a valid 10-digit mobile number';
+                hasError = true;
+            }
+
+            if (!hasError) {
+                const user = { name, mobile, loginTime: new Date().toISOString() };
+                localStorage.setItem('rikyPharmaUser', JSON.stringify(user));
+                window.location.href = 'home.html';
+            }
+        });
+
+        document.getElementById('mobile').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+        });
+
+        if (localStorage.getItem('rikyPharmaUser')) {
+            window.location.href = 'home.html';
+        }
+    </script>
+</body>
+</html>
+
+==============================================
+FILE 2: home.html (Home Page)
+==============================================
+Save this as: home.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riky Pharma - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="container">
+            <div class="header">
+                <div class="user-info card">
+                    <p class="text-sm">Welcome back,</p>
+                    <p class="font-bold" id="userName"></p>
+                    <p class="text-sm mt-10" id="currentDate"></p>
+                    <p class="text-sm" id="currentTime"></p>
+                </div>
+
+                <div class="header-buttons">
+                    <button class="btn-icon" onclick="showInfoModal()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </button>
+                    <button class="btn-icon" onclick="logout()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card text-center main-card fade-in">
+                <div class="logo-container">
+                    <img src="src/imports/image-0.png" alt="Riky Pharma" class="logo-large">
+                </div>
+
+                <h1 class="title-large">Riky Pharma</h1>
+                <p class="subtitle-large">Your Trusted Pharmaceutical Partner</p>
+                <p class="text-gray">Owned by B. Indumathi Ramkumar</p>
+
+                <div class="stars">
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                </div>
+
+                <button class="btn btn-primary btn-large" onclick="window.location.href='products.html'">
+                    View Products
+                </button>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>Quality Products</h3>
+                        <p>Certified medicines</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Fast Delivery</h3>
+                        <p>Quick & reliable</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Trusted Service</h3>
+                        <p>Since 2017</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content card">
+            <h2>About Riky Pharma</h2>
+            <p>Riky Pharma is a pharmaceutical wholesaler and distributor located on Tamil Sangam Road, Maninagaram, Madurai, Tamil Nadu (PIN: 625001).</p>
+            <p>Products include tablets, capsules, gels, herbal products, and baby diapers.</p>
+            <div class="info-box">
+                <p><strong>Established:</strong> October 16, 2017</p>
+                <p><strong>Contact:</strong> 9789555188</p>
+                <p><strong>Email:</strong> rikyfamily1@gmail.com</p>
+                <p><strong>Address:</strong> Tamil Sangam Road, Maninagaram, Madurai, TN - 625001</p>
+            </div>
+            <button class="btn btn-primary" onclick="closeInfoModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('rikyPharmaUser'));
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('userName').textContent = user.name;
+
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-IN', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-IN');
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        function showInfoModal() {
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeInfoModal() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        function logout() {
+            localStorage.removeItem('rikyPharmaUser');
+            localStorage.removeItem('rikyPharmaCart');
+            window.location.href = 'index.html';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('infoModal');
+            if (event.target == modal) {
+                closeInfoModal();
+            }
+        }
+    </script>
+</body>
+</html>
+
+==============================================
+CONTINUE IN NEXT SECTION DUE TO LENGTH...
+This file is getting too long. I'll split it into multiple parts.
+==============================================

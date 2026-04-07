@@ -1,0 +1,335 @@
+==============================================
+FILE 5: payment.html (Payment & Bill Page)
+==============================================
+Save this as: payment.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riky Pharma - Payment</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="page-container">
+        <div class="container">
+            <div class="text-center mb-30">
+                <h1 class="page-title">Payment & Bill</h1>
+                <p id="billNumber"></p>
+            </div>
+
+            <div class="payment-grid">
+                <!-- Bill Section -->
+                <div class="bill-section card">
+                    <div id="billContent" class="bill">
+                        <div class="bill-header">
+                            <img src="src/imports/image-0.png" alt="Riky Pharma" class="logo-medium">
+                            <h2>Riky Pharma</h2>
+                            <p>Owned by B. Indumathi Ramkumar</p>
+                            <p>Tamil Sangam Road, Maninagaram</p>
+                            <p>Madurai, Tamil Nadu - 625001</p>
+                            <p>Ph: 9789555188 | Email: rikyfamily1@gmail.com</p>
+                        </div>
+
+                        <div id="billDetails" class="bill-details"></div>
+                        <div id="billItems" class="bill-items"></div>
+                        <div id="billTotal" class="bill-total"></div>
+
+                        <div class="bill-footer">
+                            <p>Thank you for choosing Riky Pharma!</p>
+                            <p>For any queries, contact: 9789555188</p>
+                        </div>
+                    </div>
+
+                    <div class="bill-actions">
+                        <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
+                        <button class="btn btn-success" onclick="window.print()">Print</button>
+                    </div>
+                </div>
+
+                <!-- Payment Section -->
+                <div class="payment-section card">
+                    <h2>Select Payment Method</h2>
+
+                    <div class="payment-methods">
+                        <button class="payment-method active" data-method="upi" onclick="selectPayment('upi')">
+                            <div class="payment-icon">💳</div>
+                            <div>
+                                <h3>UPI Payment</h3>
+                                <p>Scan QR code to pay</p>
+                            </div>
+                        </button>
+
+                        <button class="payment-method" data-method="cash" onclick="selectPayment('cash')">
+                            <div class="payment-icon">💵</div>
+                            <div>
+                                <h3>Cash Payment</h3>
+                                <p>Pay with cash</p>
+                            </div>
+                        </button>
+
+                        <button class="payment-method" data-method="card" onclick="selectPayment('card')">
+                            <div class="payment-icon">💳</div>
+                            <div>
+                                <h3>Card Payment</h3>
+                                <p>Debit / Credit card</p>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div id="paymentDetails"></div>
+
+                    <button class="btn btn-primary btn-block btn-large" onclick="confirmPayment()">
+                        Confirm Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        const order = JSON.parse(localStorage.getItem('rikyPharmaOrder'));
+        let selectedMethod = 'upi';
+
+        if (!order) {
+            window.location.href = 'cart.html';
+        }
+
+        document.getElementById('billNumber').textContent = `Bill Number: ${order.billNumber}`;
+
+        // Render Bill Details
+        document.getElementById('billDetails').innerHTML = `
+            <div class="detail-row">
+                <span>Bill Number:</span>
+                <strong>${order.billNumber}</strong>
+            </div>
+            <div class="detail-row">
+                <span>Date & Time:</span>
+                <strong>${new Date(order.date).toLocaleString('en-IN')}</strong>
+            </div>
+            <div class="detail-row">
+                <span>Customer Name:</span>
+                <strong>${order.user.name}</strong>
+            </div>
+            <div class="detail-row">
+                <span>Mobile Number:</span>
+                <strong>${order.user.mobile}</strong>
+            </div>
+        `;
+
+        // Render Bill Items
+        document.getElementById('billItems').innerHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${order.items.map((item, index) => `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>
+                                <strong>${item.name}</strong><br>
+                                <small>${item.composition}</small>
+                            </td>
+                            <td>${item.quantity}</td>
+                            <td>₹${item.mrp.toFixed(2)}</td>
+                            <td>₹${(item.mrp * item.quantity).toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+
+        // Render Bill Total
+        const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
+        document.getElementById('billTotal').innerHTML = `
+            <div class="total-row">
+                <span>Total Items:</span>
+                <span>${totalItems}</span>
+            </div>
+            <div class="total-row">
+                <span>Subtotal:</span>
+                <span>₹${order.total.toFixed(2)}</span>
+            </div>
+            <div class="total-row">
+                <span>Tax (Included):</span>
+                <span>₹0.00</span>
+            </div>
+            <div class="total-row grand-total">
+                <span>Grand Total:</span>
+                <span>₹${order.total.toFixed(2)}</span>
+            </div>
+        `;
+
+        function selectPayment(method) {
+            selectedMethod = method;
+            document.querySelectorAll('.payment-method').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.method === method) {
+                    btn.classList.add('active');
+                }
+            });
+            renderPaymentDetails();
+        }
+
+        function renderPaymentDetails() {
+            const details = document.getElementById('paymentDetails');
+
+            if (selectedMethod === 'upi') {
+                const upiId = 'crramkumar1976-2@okicici';
+                const upiString = `upi://pay?pa=${upiId}&pn=Riky Pharma&am=${order.total.toFixed(2)}&cu=INR`;
+
+                details.innerHTML = `
+                    <div class="payment-info">
+                        <h3>Scan QR Code to Pay</h3>
+                        <div id="qrcode" class="qr-code"></div>
+                        <p>UPI ID: ${upiId}</p>
+                        <p class="amount-large">₹${order.total.toFixed(2)}</p>
+                    </div>
+                `;
+
+                // Generate QR Code
+                new QRCode(document.getElementById("qrcode"), {
+                    text: upiString,
+                    width: 200,
+                    height: 200
+                });
+            } else if (selectedMethod === 'cash') {
+                details.innerHTML = `
+                    <div class="payment-info">
+                        <div class="payment-icon-large">💵</div>
+                        <h3>Cash Payment</h3>
+                        <p>Amount to be paid in cash</p>
+                        <p class="amount-large">₹${order.total.toFixed(2)}</p>
+                    </div>
+                `;
+            } else if (selectedMethod === 'card') {
+                details.innerHTML = `
+                    <div class="payment-info">
+                        <div class="payment-icon-large">💳</div>
+                        <h3>Card Payment</h3>
+                        <p>Swipe or insert your card</p>
+                        <p class="amount-large">₹${order.total.toFixed(2)}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function confirmPayment() {
+            localStorage.removeItem('rikyPharmaCart');
+            window.location.href = 'success.html';
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            html2canvas(document.getElementById('billContent')).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`Riky_Pharma_Bill_${order.billNumber}.pdf`);
+            });
+        }
+
+        renderPaymentDetails();
+    </script>
+</body>
+</html>
+
+==============================================
+FILE 6: success.html (Success Page)
+==============================================
+Save this as: success.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riky Pharma - Success</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="container-center">
+            <div class="card success-card text-center fade-in">
+                <div class="success-icon">✓</div>
+
+                <h1 class="title-large">Thank You!</h1>
+                <p class="subtitle-large">Your order has been placed successfully</p>
+
+                <img src="src/imports/image-0.png" alt="Riky Pharma" class="logo-medium">
+
+                <div id="orderSummary" class="order-summary"></div>
+
+                <p class="thank-you-text">
+                    We appreciate your trust in <strong>Riky Pharma</strong>. Your health is our priority,
+                    and we're committed to providing you with the best pharmaceutical products and service.
+                </p>
+                <p class="text-sm">For any queries, feel free to contact us at <strong>9789555188</strong></p>
+
+                <div class="success-buttons">
+                    <button class="btn btn-primary" onclick="window.location.href='home.html'">
+                        Go to Home
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.location.href='products.html'">
+                        Browse Products
+                    </button>
+                </div>
+
+                <div class="rating-section">
+                    <p class="text-sm">How was your experience?</p>
+                    <div class="stars-large">
+                        <span class="star-large">⭐</span>
+                        <span class="star-large">⭐</span>
+                        <span class="star-large">⭐</span>
+                        <span class="star-large">⭐</span>
+                        <span class="star-large">⭐</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const order = JSON.parse(localStorage.getItem('rikyPharmaOrder'));
+
+        if (!order) {
+            window.location.href = 'home.html';
+        } else {
+            const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('orderSummary').innerHTML = `
+                <h3>Order Summary</h3>
+                <div class="summary-detail">
+                    <span>Bill Number:</span>
+                    <strong>${order.billNumber}</strong>
+                </div>
+                <div class="summary-detail">
+                    <span>Date & Time:</span>
+                    <strong>${new Date(order.date).toLocaleString('en-IN')}</strong>
+                </div>
+                <div class="summary-detail">
+                    <span>Total Items:</span>
+                    <strong>${totalItems}</strong>
+                </div>
+                <div class="summary-detail total-amount">
+                    <span>Total Amount:</span>
+                    <strong class="price-large">₹${order.total.toFixed(2)}</strong>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
