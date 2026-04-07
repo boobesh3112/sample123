@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { CheckCircle, Home, Package } from 'lucide-react';
+import { CheckCircle, Home, Package, Pill } from 'lucide-react';
 import { Order } from '../App';
-import { ImageWithFallback } from './figma/ImageWithFallback';
 
 interface SuccessPageProps {
   order: Order | null;
@@ -65,11 +64,13 @@ export default function SuccessPage({ order }: SuccessPageProps) {
             transition={{ delay: 0.6 }}
             className="my-8"
           >
-            <ImageWithFallback
-              src="figma:asset/88b17ec2d6d98f8de7b8880fcfaa15c63747386e.png"
-              alt="Riky Pharma"
-              className="h-20 w-auto mx-auto"
-            />
+            <div className="flex items-center justify-center gap-3">
+              <Pill className="w-16 h-16 text-blue-600" />
+              <div className="text-left">
+                <h2 className="text-2xl font-bold text-gray-800">Riky Pharma</h2>
+                <p className="text-blue-600 text-sm">Since 2017</p>
+              </div>
+            </div>
           </motion.div>
 
           {/* Order Details */}
