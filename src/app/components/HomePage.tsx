@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { Star, ShoppingBag, Info, Phone, Mail, MapPin, LogOut, Calendar, Clock } from 'lucide-react';
+import { Star, ShoppingBag, Info, Phone, Mail, MapPin, LogOut, Calendar, Clock, Pill } from 'lucide-react';
 import { User } from '../App';
 import { useState } from 'react';
-import logoImg from 'figma:asset/88b17ec2d6d98f8de7b8880fcfaa15c63747386e.png';
 
 interface HomePageProps {
   user: User;
@@ -141,7 +140,13 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
             transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
             className="flex justify-center mb-8"
           >
-            <img src={logoImg} alt="Riky Pharma" className="h-32 w-auto object-contain" />
+            <div className="flex items-center gap-4 bg-gradient-to-r from-blue-600 to-green-600 px-8 py-6 rounded-3xl shadow-2xl">
+              <Pill className="w-16 h-16 text-white" />
+              <div className="text-left">
+                <h2 className="text-3xl font-bold text-white">Riky Pharma</h2>
+                <p className="text-blue-100 text-sm">Since 2017</p>
+              </div>
+            </div>
           </motion.div>
 
           {/* Welcome Message */}
