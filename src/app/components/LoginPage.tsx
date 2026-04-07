@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import { Phone, User, Pill } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
 
 interface LoginPageProps {
   onLogin: (name: string, mobile: string) => void;
@@ -57,18 +56,13 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
             className="flex justify-center mb-8"
           >
             <div className="relative">
-              <ImageWithFallback
-                src="figma:asset/88b17ec2d6d98f8de7b8880fcfaa15c63747386e.png"
-                alt="Riky Pharma Logo"
-                className="h-24 w-auto object-contain"
-              />
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute -top-2 -right-2 bg-blue-500 rounded-full p-2"
-              >
-                <Pill className="w-5 h-5 text-white" />
-              </motion.div>
+              <div className="flex items-center justify-center gap-4 bg-gradient-to-r from-blue-600 to-green-600 px-8 py-6 rounded-3xl shadow-2xl mb-6">
+                <Pill className="w-20 h-20 text-white" />
+                <div className="text-left">
+                  <h2 className="text-4xl font-bold text-white">Riky Pharma</h2>
+                  <p className="text-blue-100 text-sm">Since 2017</p>
+                </div>
+              </div>
             </div>
           </motion.div>
 
